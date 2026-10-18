@@ -1,0 +1,895 @@
+{
+  "name": "Off-Grid Microgrid 8-Agent System Optimizer",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "197b466d-4f3e-41cb-9d25-92c3113a2d25",
+      "name": "Start Simulation",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        1104
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "value": "400A 120/240V Split-Phase",
+              "type": "string",
+              "id": "1",
+              "name": "service_rating"
+            },
+            {
+              "id": "2",
+              "type": "string",
+              "value": "Victoria, BC, Canada",
+              "name": "location"
+            },
+            {
+              "value": 30,
+              "type": "number",
+              "id": "3",
+              "name": "spring_baseline_kwh_day"
+            },
+            {
+              "value": 39,
+              "type": "number",
+              "id": "4",
+              "name": "winter_kwh_day"
+            },
+            {
+              "value": 25.5,
+              "type": "number",
+              "id": "5",
+              "name": "summer_kwh_day"
+            },
+            {
+              "value": 34.5,
+              "type": "number",
+              "id": "6",
+              "name": "fall_kwh_day"
+            },
+            {
+              "id": "7",
+              "type": "string",
+              "value": "JA Solar JAM54D41-440/LB (440W)",
+              "name": "solar_panel_model"
+            },
+            {
+              "id": "8",
+              "type": "number",
+              "value": 350,
+              "name": "panel_cost_with_racking"
+            },
+            {
+              "value": "EG4 FlexBOSS21 (12kW batt / 16kW PV / 21kWdc input)",
+              "type": "string",
+              "id": "9",
+              "name": "inverter_model"
+            },
+            {
+              "value": 5500,
+              "type": "number",
+              "id": "10",
+              "name": "inverter_cost"
+            },
+            {
+              "id": "11",
+              "type": "string",
+              "value": "EG4 280Ah All-Weather (51.2V 280Ah = 14.336 kWh)",
+              "name": "battery_model"
+            },
+            {
+              "id": "12",
+              "type": "number",
+              "value": 5500,
+              "name": "battery_cost"
+            },
+            {
+              "value": "EG4 GridBOSS 200A MID",
+              "type": "string",
+              "id": "13",
+              "name": "gateway_model"
+            },
+            {
+              "value": 2500,
+              "type": "number",
+              "id": "14",
+              "name": "gridboss_cost"
+            },
+            {
+              "value": 4500,
+              "type": "number",
+              "id": "15",
+              "name": "splitter_cost"
+            },
+            {
+              "value": 1500,
+              "type": "number",
+              "id": "16",
+              "name": "panel_200a_cost"
+            },
+            {
+              "value": "BE7500ID (6kW continuous / 7.5kW surge)",
+              "type": "string",
+              "id": "17",
+              "name": "generator_model"
+            },
+            {
+              "id": "18",
+              "type": "number",
+              "value": 1.65,
+              "name": "generator_fuel_rate_per_kwh"
+            },
+            {
+              "value": 100,
+              "type": "number",
+              "id": "19",
+              "name": "generator_service_interval_kwh"
+            },
+            {
+              "id": "20",
+              "type": "number",
+              "value": 300,
+              "name": "generator_service_cost"
+            },
+            {
+              "id": "21",
+              "type": "number",
+              "value": 0.02,
+              "name": "generator_efficiency_loss_per_service"
+            },
+            {
+              "value": 1.17,
+              "type": "number",
+              "id": "22",
+              "name": "psh_winter"
+            },
+            {
+              "id": "23",
+              "type": "number",
+              "value": 4.25,
+              "name": "psh_spring"
+            },
+            {
+              "value": 6.02,
+              "type": "number",
+              "id": "24",
+              "name": "psh_summer"
+            },
+            {
+              "value": 2.41,
+              "type": "number",
+              "id": "25",
+              "name": "psh_fall"
+            },
+            {
+              "id": "26",
+              "type": "number",
+              "value": 1.17,
+              "name": "winter_blackout_psh"
+            },
+            {
+              "value": 0.05,
+              "type": "number",
+              "id": "27",
+              "name": "battery_full_power_derate"
+            },
+            {
+              "id": "28",
+              "type": "number",
+              "value": 0.03,
+              "name": "battery_monthly_degradation_rate"
+            },
+            {
+              "value": 7510,
+              "type": "number",
+              "id": "29",
+              "name": "bos_wiring_insulation_breakers_cost"
+            },
+            {
+              "id": "30",
+              "type": "number",
+              "value": 5,
+              "name": "generator_operating_kw"
+            },
+            {
+              "id": "31",
+              "type": "number",
+              "value": 1.8,
+              "name": "generator_to_load_kw"
+            },
+            {
+              "value": 3.2,
+              "type": "number",
+              "id": "32",
+              "name": "generator_to_battery_kw"
+            }
+          ],
+          "mode": "manual"
+        },
+        "options": {}
+      },
+      "id": "31efe737-1660-4fdf-81da-76d9368e5694",
+      "name": "Load System Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        1104
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Perform full home consumption calculation using: Spring={{ $json.spring_baseline_kwh_day }} kWh/d, Winter={{ $json.winter_kwh_day }} kWh/d, Summer={{ $json.summer_kwh_day }} kWh/d, Fall={{ $json.fall_kwh_day }} kWh/d. Split into Emergency loads, Non-emergency loads, and Battery reserve required for 400A service.",
+        "options": {
+          "systemMessage": "You are Agent 1: Consumption Calculator for the entire home. Calculate seasonal daily kWh, annual kWh, peak power (1.93 kW avg peak, 15-24 kW surge), and break down loads into: (1) Emergency/Critical loads (refrigeration, lighting, comms, well/sump pump = ~40% of demand), (2) Non-emergency/Sheddable loads (HVAC strips, EV charger, water heater dump = ~60% of demand), and (3) Battery storage capacity required for continuous off-grid operation."
+        }
+      },
+      "id": "213b2eb1-f3a0-4fef-9645-1ec2f0d8fc07",
+      "name": "Agent 1 - Home Consumption",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "2d037f63-d299-4834-b3fc-0011c2c0e5ed",
+      "name": "LLM Agent 1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        224
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 6
+      },
+      "id": "d581e20a-b8c3-4420-b6e1-44a41781fabc",
+      "name": "Merge Parallel Calculations",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Calculate solar production for JA Solar 440W panels with FlexBOSS21 inverters in Victoria, BC. PSH: Winter={{ $json.psh_winter }}, Spring={{ $json.psh_spring }}, Summer={{ $json.psh_summer }}, Fall={{ $json.psh_fall }}. Account for cold-weather Voc (-15C), thermal derating, and 0.5%/yr degradation.",
+        "options": {
+          "systemMessage": "You are Agent 2a: Solar Production Engineer. Calculate daily and annual generation per 440W module and for candidate array sizes (48, 60, 72 panels). Evaluate MPPT operating voltage (120-440V), cold Voc at -15C (10% increase = 42.79V/panel), string limits (12 panels in series = 513.5V < 600V max), inverter 96.5% CEC efficiency, and 0.5%/yr cell degradation over 25 years."
+        }
+      },
+      "id": "80902bf1-4ebb-4605-8490-b11c5d32b677",
+      "name": "Agent 2a - Solar Production",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "c3cad99c-fac2-4f7c-8527-873e3f5128fc",
+      "name": "LLM Agent 2a",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        624
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Calculate generator performance for BE7500ID (6kW continuous) with fuel cost ${{ $json.generator_fuel_rate_per_kwh }}/kWh, service every {{ $json.generator_service_interval_kwh }} kWh at ${{ $json.generator_service_cost }}, and {{ $json.generator_efficiency_loss_per_service*100 }}% efficiency drop per service.",
+        "options": {
+          "systemMessage": "You are Agent 2b: Generator & Thermal Systems Engineer. Model the BE7500ID generator: rated 6 kW continuous / 7.5 kW surge. Crucial finding: Base fuel is $1.65/kWh, but $300 service every 100 kWh adds $3.00/kWh in maintenance, making the real initial cost $4.65/kWh! Model 2% cumulative efficiency drop per service and define optimal load point (5.0 kW / 83% load) for rapid battery bulk-charging."
+        }
+      },
+      "id": "c462d23c-bd97-4890-baa5-5431bafbdd9d",
+      "name": "Agent 2b - Generator Production",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "08ede2f6-d891-43f0-bd81-aaa4be104093",
+      "name": "LLM Agent 2b",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        1024
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze unit costs of production, servicing, and replacement for: Solar Panels (${{ $json.panel_cost_with_racking }}/ea), FlexBOSS21 (${{ $json.inverter_cost }}), EG4 280Ah Battery (${{ $json.battery_cost }}), GridBOSS (${{ $json.gridboss_cost }}), Splitter (${{ $json.splitter_cost }}), and Generator ($1.65/kWh + $300/100kWh).",
+        "options": {
+          "systemMessage": "You are Agent 3: Cost & Sourcing Analyst. Calculate levelized unit costs: Solar Capex ($0.80/Wdc fully installed with racking), Battery storage cost ($384/kWh nominal), Inverter power cost ($458/kW), and Generator LCOE ($4.65 to $4.97/kWh). Provide clear unit economic comparisons to guide capital allocation."
+        }
+      },
+      "id": "5d302fa0-62b6-4a0b-a9f7-1815e847ea58",
+      "name": "Agent 3 - Unit Cost & Sourcing",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        1200
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "da97c1ab-3812-42ae-9973-e5fb138320c2",
+      "name": "LLM Agent 3",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        1424
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Evaluate 25-year lifecycle maintenance and replacement costs for 400A service: wiring, breakers, distribution splitter, EG4 280Ah batteries (8,000 cycles), FlexBOSS21 inverters, and battery heating/cooling systems.",
+        "options": {
+          "systemMessage": "You are Agent 4: Electrical Asset Lifecycle & Maintenance Engineer. Model 25-year system degradation, scheduled overhauls, and replacement reserves: (1) EG4 280Ah LiFePO4 batteries (>8,000 cycles, 15-20 yr life), (2) Inverter replacement/refurbishment at year 12-15, (3) Breakers, contactors, GridBOSS MID inspection, (4) Splitter and 4/0 AWG Cu / 500 kcmil wiring maintenance, (5) Battery internal thermodynamic heater reliability in Victoria winter cold snaps."
+        }
+      },
+      "id": "7595c94d-03d9-4798-b279-2bcc11923a32",
+      "name": "Agent 4 - Long-Term Maintenance",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "b8865ab0-897e-40d8-b4fb-6ec4c858c93c",
+      "name": "LLM Agent 4",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        1824
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Calculate 3-day outage consumption for every season: Spring baseline (90 kWh), Winter (117 kWh), Summer (76.5 kWh), Fall (103.5 kWh). Break each into Emergency circuits vs Non-emergency circuits, and specify required battery storage.",
+        "options": {
+          "systemMessage": "You are Agent 6: Outage Autonomy & Critical Load Specialist. Model 3 consecutive zero-solar blackout days for all 4 seasons: Spring=90 kWh, Winter=117 kWh, Summer=76.5 kWh, Fall=103.5 kWh. Delineate between: (1) Emergency Loads (12-15 kWh/day) that must run 100% of the time, and (2) Non-Emergency Loads that GridBOSS can shed via Smart Ports 1-4. Show how 8 batteries (97.5 kWh usable) delivers 3.25 days Spring autonomy and 2.50 days Winter autonomy."
+        }
+      },
+      "id": "b983eacd-536f-4701-9b74-3ae81ff145ae",
+      "name": "Agent 6 - 3-Day Seasonal Autonomy",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        2112
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "01e6f15b-eae1-4a4a-bdbd-54d9c2f25ef6",
+      "name": "LLM Agent 6",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        2336
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst items = $input.all();\nlet results = {\n  agent1_consumption: items[0]?.json?.output || 'Agent 1 calculation completed',\n  agent2a_solar: items[1]?.json?.output || 'Agent 2a calculation completed',\n  agent2b_generator: items[2]?.json?.output || 'Agent 2b calculation completed',\n  agent3_unit_costs: items[3]?.json?.output || 'Agent 3 calculation completed',\n  agent4_maintenance: items[4]?.json?.output || 'Agent 4 calculation completed',\n  agent6_three_day: items[5]?.json?.output || 'Agent 6 calculation completed',\n  timestamp: new Date().toISOString()\n};\n\nreturn [{ json: results }];\n      "
+      },
+      "id": "41ad37ed-1fca-4108-a652-c1af5cca1878",
+      "name": "Consolidate Agent Outputs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Using all previous calculations:\n- Consumption: {{ $json.agent1_consumption }}\n- Solar: {{ $json.agent2a_solar }}\n- Generator: {{ $json.agent2b_generator }}\n- Costs: {{ $json.agent3_unit_costs }}\n- Maintenance: {{ $json.agent4_maintenance }}\n- 3-Day Autonomy: {{ $json.agent6_three_day }}\n\nOptimize the entire hybrid system for minimum 10-year lifecycle cost while ensuring 3-day backup, 400A service integration, zero export, and minimal generator runtime. Provide full engineering reasoning, and end with the required JSON block of quantities.",
+        "options": {
+          "systemMessage": "You are Agent 5: Lead Systems Management & Optimization Agent. Synthesize findings from Agents 1, 2a, 2b, 3, 4, and 6. Provide your optimized system sizing: determine optimal solar panel count (e.g. 72 JA Solar 440W panels = 31.68 kWdc), inverters (2 x FlexBOSS21), system controllers (1 x GridBOSS 200A MID), batteries (8 x EG4 280Ah = 114.7 kWh nom), and 400A splitter. Detail the generator dispatch strategy and annual operating metrics.\n\nCRITICAL: At the very end of your response, you MUST output a single valid JSON block enclosed in triple backticks with the exact schema below so the downstream system dynamically compiles the BOM from your calculations:\n```json\n{\n  \"solar_panels\": 72,\n  \"flexboss21_inverters\": 2,\n  \"gridboss_units\": 1,\n  \"eg4_batteries\": 8,\n  \"distribution_splitters\": 1,\n  \"distribution_panels_200a\": 2,\n  \"fused_disconnects_400a\": 1,\n  \"annual_generator_kwh\": 330.0,\n  \"annual_generator_services\": 3,\n  \"annual_generator_cost\": 1457.50\n}\n```"
+        }
+      },
+      "id": "432e9fcb-e348-4bcd-962b-77397befa4fe",
+      "name": "Agent 5 - Management & Optimization",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1232,
+        864
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "00e0b005-9ab4-4d33-b554-030ec6e6df93",
+      "name": "LLM Agent 5",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1312,
+        1088
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "324c5e9e-3992-4b94-bc4d-467c126d61a5",
+      "name": "Merge Final Optimizations",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1584,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Run an alternative optimization assuming Agent 2b (Generator) and Agent 1 (Whole Home Baseline) do NOT exist.\nUse Agent 6 (3-day seasonal critical consumption: {{ $json.agent6_three_day }}), Agent 2a (Solar: {{ $json.agent2a_solar }}), Agent 3 (Unit Costs: {{ $json.agent3_unit_costs }}), and Agent 4 (Maintenance: {{ $json.agent4_maintenance }}).\nDetermine the exact solar array and battery bank size needed to achieve 100% off-grid autonomy purely on renewables without any generator.",
+        "options": {
+          "systemMessage": "You are Agent 7: Zero-Generator & Emergency Contingency Optimization Agent. Challenge hypothesis: What if the generator does not exist (zero fuel/generator backup) and the load is strictly restricted to Agent 6 critical/emergency 3-day profiles? Calculate the pure solar + BESS requirements: compare sizing for 100% winter solar autonomy (requires 76-80 panels and 10-12 batteries = $115,000+ capex) vs. emergency circuit load shedding. Highlight the extreme cost premium of eliminating the generator entirely."
+        }
+      },
+      "id": "0dc4a8c9-703c-4de6-b501-39042b75769c",
+      "name": "Agent 7 - Zero-Gen Contingency Optimizer",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1232,
+        1376
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "fa45caf1-8386-4d1e-9a81-7c05c2b6c10d",
+      "name": "LLM Agent 7",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1312,
+        1600
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst items = $input.all();\nconst agent5Output = items[0]?.json?.output || '';\nconst agent7Output = items[1]?.json?.output || '';\n\n// Access system unit costs dynamically from the initial parameter node\nconst params = $('Load System Parameters').first().json;\n\nconst panelCost = Number(params.panel_cost_with_racking) || 350;\nconst inverterCost = Number(params.inverter_cost) || 5500;\nconst batteryCost = Number(params.battery_cost) || 5500;\nconst gridbossCost = Number(params.gridboss_cost) || 2500;\nconst splitterCost = Number(params.splitter_cost) || 4500;\nconst panel200aCost = Number(params.panel_200a_cost) || 1500;\nconst fusedDisconnectCost = 1500;\nconst bosCost = Number(params.bos_wiring_insulation_breakers_cost) || 7510;\n\n// Default initial state before agent parsing\nlet quantities = {\n  solar_panels: 72,\n  flexboss21_inverters: 2,\n  gridboss_units: 1,\n  eg4_batteries: 8,\n  distribution_splitters: 1,\n  distribution_panels_200a: 2,\n  fused_disconnects_400a: 1,\n  annual_generator_kwh: 330.0,\n  annual_generator_services: 3,\n  annual_generator_cost: 1457.50\n};\n\n// DYNAMICALLY EXTRACT AGENT 5's COMPUTED QUANTITIES\nlet parsedDynamically = false;\nconst jsonMatch = agent5Output.match(/```json\\s*(\\{[\\s\\S]*?\\})\\s*```/);\nif (jsonMatch) {\n  try {\n    const parsed = JSON.parse(jsonMatch[1]);\n    quantities = Object.assign(quantities, parsed);\n    parsedDynamically = true;\n  } catch (e) {}\n}\n\nif (!parsedDynamically) {\n  // Regex fallback directly from Agent 5 text\n  const pMatch = agent5Output.match(/(\\d+)\\s*(?:x|\u00d7)?\\s*(?:panels|JA Solar|modules)/i);\n  if (pMatch) quantities.solar_panels = parseInt(pMatch[1], 10);\n  \n  const bMatch = agent5Output.match(/(\\d+)\\s*(?:x|\u00d7)?\\s*(?:batteries|EG4\\s*280|battery)/i);\n  if (bMatch) quantities.eg4_batteries = parseInt(bMatch[1], 10);\n  \n  const iMatch = agent5Output.match(/(\\d+)\\s*(?:x|\u00d7)?\\s*(?:FlexBOSS|inverters)/i);\n  if (iMatch) quantities.flexboss21_inverters = parseInt(iMatch[1], 10);\n}\n\n// Compute dynamic line items and totals from Agent 5's decision\nconst pvTotal = quantities.solar_panels * panelCost;\nconst pvKw = (quantities.solar_panels * 0.44).toFixed(2);\nconst invTotal = quantities.flexboss21_inverters * inverterCost;\nconst gbTotal = quantities.gridboss_units * gridbossCost;\nconst battTotal = quantities.eg4_batteries * batteryCost;\nconst battKwh = (quantities.eg4_batteries * 14.336).toFixed(1);\nconst splitTotal = quantities.distribution_splitters * splitterCost;\nconst pnlTotal = quantities.distribution_panels_200a * panel200aCost;\nconst discTotal = quantities.fused_disconnects_400a * fusedDisconnectCost;\n\nconst equipSubtotal = pvTotal + invTotal + gbTotal + battTotal + splitTotal + pnlTotal + discTotal;\nconst totalCapex = equipSubtotal + bosCost;\nconst annualGenCost = Number(quantities.annual_generator_cost) || 1457.50;\nconst lifecycle10yr = totalCapex + (10 * annualGenCost);\n\nreturn [{\n  json: {\n    workflow_title: 'Off-Grid Microgrid 8-Agent Autonomous Design & BOM Optimizer',\n    status: 'OPTIMIZATION_COMPLETE',\n    bom_generation_mode: parsedDynamically ? 'FULLY_DYNAMIC_FROM_AGENT_5_JSON' : 'DYNAMIC_PARSED_FROM_AGENT_5_TEXT',\n    agent_5_selected_quantities: quantities,\n    dynamic_bom_summary: {\n      solar_panels: `${quantities.solar_panels} x JA Solar 440W (${pvKw} kWdc) @ $${panelCost} = $${pvTotal.toLocaleString('en-CA')}`,\n      hybrid_inverters: `${quantities.flexboss21_inverters} x EG4 FlexBOSS21 @ $${inverterCost} = $${invTotal.toLocaleString('en-CA')}`,\n      system_controller: `${quantities.gridboss_units} x EG4 GridBOSS MID @ $${gridbossCost} = $${gbTotal.toLocaleString('en-CA')}`,\n      battery_storage: `${quantities.eg4_batteries} x EG4 280Ah (${battKwh} kWh nom) @ $${batteryCost} = $${battTotal.toLocaleString('en-CA')}`,\n      service_splitter: `${quantities.distribution_splitters} x 400A Distribution Splitter @ $${splitterCost} = $${splitTotal.toLocaleString('en-CA')}`,\n      distribution_panels: `${quantities.distribution_panels_200a} x 200A Electrical Panels @ $${panel200aCost} = $${pnlTotal.toLocaleString('en-CA')}`,\n      fused_disconnect: `${quantities.fused_disconnects_400a} x 400A Fused Service Disconnect @ $${fusedDisconnectCost} = $${discTotal.toLocaleString('en-CA')}`,\n      electrical_bos_breakers_wiring_insulation: `Breakers, 500kcmil/4/0AWG wiring, conduit, insulation = $${bosCost.toLocaleString('en-CA')}`,\n      equipment_subtotal: `$${equipSubtotal.toLocaleString('en-CA')} CAD`,\n      total_capital_cost: `$${totalCapex.toLocaleString('en-CA')} CAD (Equipment + BOS)`,\n      annual_generator_om: `$${annualGenCost.toLocaleString('en-CA')} CAD / year (${quantities.annual_generator_kwh} kWh/yr, ${quantities.annual_generator_services} services/yr)`,\n      lifecycle_10yr_total: `$${lifecycle10yr.toLocaleString('en-CA')} CAD`\n    },\n    primary_design_recommendation_agent5: agent5Output,\n    zero_generator_contingency_agent7: agent7Output\n  }\n}];\n"
+      },
+      "id": "68b4f0f4-f06d-4dec-8b43-62683d3deb8a",
+      "name": "Executive Synthesis & BOM Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1808,
+        1168
+      ]
+    }
+  ],
+  "connections": {
+    "Start Simulation": {
+      "main": [
+        [
+          {
+            "node": "Load System Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load System Parameters": {
+      "main": [
+        [
+          {
+            "node": "Agent 1 - Home Consumption",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 2a - Solar Production",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 2b - Generator Production",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 3 - Unit Cost & Sourcing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 4 - Long-Term Maintenance",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 6 - 3-Day Seasonal Autonomy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 1 - Home Consumption": {
+      "main": [
+        [
+          {
+            "node": "Merge Parallel Calculations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM Agent 1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 1 - Home Consumption",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Parallel Calculations": {
+      "main": [
+        [
+          {
+            "node": "Consolidate Agent Outputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 2a - Solar Production": {
+      "main": [
+        [
+          {
+            "node": "Merge Parallel Calculations",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "LLM Agent 2a": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 2a - Solar Production",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 2b - Generator Production": {
+      "main": [
+        [
+          {
+            "node": "Merge Parallel Calculations",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "LLM Agent 2b": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 2b - Generator Production",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 3 - Unit Cost & Sourcing": {
+      "main": [
+        [
+          {
+            "node": "Merge Parallel Calculations",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "LLM Agent 3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 3 - Unit Cost & Sourcing",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 4 - Long-Term Maintenance": {
+      "main": [
+        [
+          {
+            "node": "Merge Parallel Calculations",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "LLM Agent 4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 4 - Long-Term Maintenance",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 6 - 3-Day Seasonal Autonomy": {
+      "main": [
+        [
+          {
+            "node": "Merge Parallel Calculations",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "LLM Agent 6": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 6 - 3-Day Seasonal Autonomy",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidate Agent Outputs": {
+      "main": [
+        [
+          {
+            "node": "Agent 5 - Management & Optimization",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Agent 7 - Zero-Gen Contingency Optimizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 5 - Management & Optimization": {
+      "main": [
+        [
+          {
+            "node": "Merge Final Optimizations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM Agent 5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 5 - Management & Optimization",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Final Optimizations": {
+      "main": [
+        [
+          {
+            "node": "Executive Synthesis & BOM Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 7 - Zero-Gen Contingency Optimizer": {
+      "main": [
+        [
+          {
+            "node": "Merge Final Optimizations",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "LLM Agent 7": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 7 - Zero-Gen Contingency Optimizer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true,
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp"
+  }
+}
